@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Pipsa Montacargas — Renta, Venta y Mantenimineto en Guadalajara</title>
+<meta name="description" content="Renta y venta de montacargas en Guadalajara. Equipos eléctricos, gas LP y batería de litio. Marcas Yale, Crown, Toyota, Hyster, Nissan, Raymond y Unicarriers. Más de 17 años de experiencia." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:        #0a0a0a;
+    --bg-2:      #121212;
+    --surface:   #161616;
+    --surface-2: #1e1e1e;
+    --border:    #2a2a2a;
+    --gold:      #f0b800;
+    --gold-dim:  rgba(240,184,0,0.1);
+    --white:     #f5f2ea;
+    --text-2:    #a3a3a3;
+    --text-3:    #666666;
+    --green:     #4ADE80;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg); color: var(--white);
+    font-family: 'Inter', sans-serif;
+    overflow-x: hidden; line-height: 1.55;
+    position: relative; cursor: none;
+  }
+  @media (hover: none) { body { cursor: auto; } }
+  @media (prefers-reduced-motion: reduce) { * { animation-duration: 0.01ms !important; } html { scroll-behavior: auto; } body { cursor: auto; } }
+
+  h1, h2, h3 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800; letter-spacing: -0.01em; text-transform: uppercase;
+  }
+  a { color: inherit; text-decoration: none; }
+  button { font-family: inherit; cursor: none; }
+  @media (hover: none) { button, a { cursor: auto; } }
+  ::selection { background: var(--gold); color: black; }
+  :focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; border-radius: 4px; }
+
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 32px; }
+
+  /* custom cursor */
+  .cursor {
+    position: fixed; top: 0; left: 0; width: 8px; height: 8px; border-radius: 50%;
+    background: var(--gold); pointer-events: none; z-index: 9999;
+    transform: translate(-50%, -50%); transition: width 0.2s, height 0.2s, background 0.2s;
+  }
+  .cursor-ring {
+    position: fixed; top: 0; left: 0; width: 34px; height: 34px; border-radius: 50%;
+    border: 1.5px solid rgba(240,184,0,0.4); pointer-events: none; z-index: 9999;
+    transform: translate(-50%, -50%); transition: width 0.25s, height 0.25s, border-color 0.25s, transform 0.1s;
+  }
+  .cursor.hovering { width: 4px; height: 4px; }
+  .cursor-ring.hovering { width: 56px; height: 56px; border-color: var(--gold); }
+  @media (hover: none) { .cursor, .cursor-ring { display: none; } }
+
+  /* background texture */
+  .bg-texture {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image: linear-gradient(rgba(240,184,0,0.045) 1px, transparent 1px), linear-gradient(90deg, rgba(240,184,0,0.045) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(ellipse 90% 100% at 50% 30%, black 0%, transparent 90%);
+  }
+
+  .particles { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+  .particle { position: absolute; border-radius: 50%; background: var(--gold); opacity: 0; animation: floatUp linear infinite; }
+  @keyframes floatUp {
+    0%   { transform: translateY(0) translateX(0); opacity: 0; }
+    10%  { opacity: 0.5; }
+    90%  { opacity: 0.3; }
+    100% { transform: translateY(-100vh) translateX(20px); opacity: 0; }
+  }
+
+  /* nav */
+  header {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(10,10,10,0.85); backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border);
+  }
+  nav { max-width: 1180px; margin: 0 auto; padding: 16px 32px; display: flex; align-items: center; justify-content: space-between; }
+  .logo { display: flex; align-items: center; gap: 12px; }
+  .logo-icon {
+    width: 38px; height: 38px; border-radius: 7px; background: var(--gold);
+    display: flex; align-items: center; justify-content: center; font-size: 19px; flex-shrink: 0;
+  }
+  .logo-text { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 18px; line-height: 1; }
+  .logo-sub { font-size: 9.5px; letter-spacing: 0.14em; color: var(--gold); margin-top: 2px; }
+  .nav-links { display: flex; gap: 32px; font-size: 14px; color: var(--text-2); }
+  .nav-links a { position: relative; padding-bottom: 3px; }
+  .nav-links a::after {
+    content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 1.5px; background: var(--gold);
+    transition: width 0.25s;
+  }
+  .nav-links a:hover::after { width: 100%; }
+  .nav-links a:hover { color: var(--white); }
+  .nav-cta { background: var(--gold); color: black; padding: 10px 22px; border-radius: 6px; font-size: 13.5px; font-weight: 700; text-transform: uppercase; }
+  @media (max-width: 900px) { .nav-links { display: none; } }
+
+  /* hero con composite bodega + montacargas (parallax al scroll) */
+  .hero {
+    position: relative; z-index: 1;
+    min-height: 100vh;
+    display: flex; align-items: center;
+    overflow: hidden;
+    padding: 100px 0 80px;
+  }
+  .hero-scene {
+    position: absolute; inset: 0; z-index: 0;
+    overflow: hidden; will-change: transform;
+  }
+  .hero-scene-bg {
+    position: absolute; inset: -6% -6%;
+    background-size: cover; background-position: center 65%;
+    filter: saturate(0.85) brightness(0.62) contrast(1.05);
+    will-change: transform;
+  }
+  .hero-scene-forklift-wrap {
+    position: absolute; right: -2%; bottom: 0; height: 92%;
+    max-width: 56%; display: flex; align-items: flex-end; justify-content: center;
+    will-change: transform;
+  }
+  .hero-scene-forklift {
+    height: 100%; width: auto; object-fit: contain;
+    filter: drop-shadow(0 30px 40px rgba(0,0,0,0.55)) brightness(0.98) contrast(1.05);
+  }
+  .hero-scene-shadow {
+    position: absolute; left: 50%; bottom: 3%; transform: translateX(-50%);
+    width: 60%; height: 26px; border-radius: 50%;
+    background: radial-gradient(ellipse, rgba(0,0,0,0.55) 0%, transparent 72%);
+    filter: blur(2px);
+  }
+  .hero-scene-fade {
+    position: absolute; inset: 0;
+    background:
+      linear-gradient(180deg, rgba(10,10,10,0.6) 0%, rgba(10,10,10,0.22) 38%, rgba(10,10,10,0.55) 72%, var(--bg) 100%),
+      linear-gradient(100deg, rgba(10,10,10,0.88) 0%, rgba(10,10,10,0.5) 38%, transparent 62%);
+  }
+  .hero-content { position: relative; z-index: 1; width: 100%; }
+  .hero-inner { max-width: 680px; }
+
+  .hero-eyebrow {
+    display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700;
+    letter-spacing: 0.1em; color: var(--gold); text-transform: uppercase; margin-bottom: 20px;
+  }
+  .hero-eyebrow::before { content: ''; width: 24px; height: 2px; background: var(--gold); }
+
+  h1.hero-title { font-size: clamp(42px, 6vw, 78px); line-height: 0.95; margin-bottom: 22px; }
+  h1.hero-title .accent { color: var(--gold); }
+
+  .hero-sub { font-family: 'Inter', sans-serif; font-size: 17px; color: var(--text-2); max-width: 480px; margin-bottom: 32px; line-height: 1.65; }
+
+  .hero-badges { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 36px; }
+  .hero-badge {
+    display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600;
+    background: rgba(22,22,22,0.8); backdrop-filter: blur(8px);
+    border: 1px solid var(--border); padding: 7px 13px; border-radius: 20px; color: var(--text-2);
+  }
+  .hero-badge svg { color: var(--gold); flex-shrink: 0; }
+
+  .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--gold); color: black; padding: 14px 26px; border-radius: 7px; border: none;
+    font-weight: 700; font-size: 14.5px; text-transform: uppercase; letter-spacing: 0.02em;
+    display: inline-flex; align-items: center; gap: 8px; transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 26px rgba(240,184,0,0.35); }
+  .btn-whatsapp {
+    background: #25D366; color: white; padding: 14px 26px; border-radius: 7px; border: none;
+    font-weight: 700; font-size: 14.5px; display: inline-flex; align-items: center; gap: 8px;
+    transition: transform 0.15s;
+  }
+  .btn-whatsapp:hover { transform: translateY(-2px); }
+
+  .hero-scroll {
+    position: absolute; bottom: 36px; left: 50%; transform: translateX(-50%);
+    z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 8px;
+    color: var(--text-3); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+    animation: bounce 2s infinite;
+  }
+  .hero-scroll svg { opacity: 0.5; }
+  @keyframes bounce { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(6px)} }
+
+  @media (max-width: 768px) {
+    .hero { min-height: 100svh; padding: 120px 0 100px; }
+    h1.hero-title { font-size: clamp(38px, 9vw, 56px); }
+    .hero-scene-forklift-wrap { max-width: 78%; opacity: 0.5; right: -8%; }
+    .hero-scene-fade { background: linear-gradient(180deg, rgba(10,10,10,0.7) 0%, rgba(10,10,10,0.5) 45%, rgba(10,10,10,0.82) 80%, var(--bg) 100%); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-scene-bg, .hero-scene-forklift-wrap { transform: none !important; transition: none !important; }
+  }
+
+  /* stats */
+  .stats { position: relative; z-index: 1; padding: 80px 0; }
+  .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; }
+  @media (max-width: 680px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+  .stat-item {
+    padding: 36px 28px; background: var(--surface);
+    border: 1px solid var(--border); text-align: center;
+    transition: background 0.2s;
+  }
+  .stat-item:hover { background: var(--surface-2); }
+  .counter-num { font-family: 'Barlow Condensed', sans-serif; font-size: 52px; font-weight: 900; color: var(--gold); line-height: 1; }
+  .stat-label { font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-2); margin-top: 6px; }
+
+  /* brands */
+  .brands { position: relative; z-index: 1; padding: 90px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .brands-label { text-align: center; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-3); margin-bottom: 40px; }
+
+  .brands-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+  @media (max-width: 980px) { .brands-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px) { .brands-grid { grid-template-columns: 1fr; } }
+
+  .brand-poster {
+    position: relative; border-radius: 14px; overflow: hidden;
+    aspect-ratio: 3/4.4; background: #f5f5f5;
+    border: 1px solid var(--border);
+    transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+  }
+  .brand-poster:hover { transform: translateY(-6px); border-color: var(--gold); box-shadow: 0 16px 44px rgba(240,184,0,0.16); }
+  .brand-poster img { width: 100%; height: 100%; object-fit: contain; display: block; }
+  .brand-poster-label {
+    position: absolute; left: 0; right: 0; bottom: 0;
+    padding: 16px 18px; background: linear-gradient(180deg, transparent, rgba(0,0,0,0.8) 65%);
+    display: flex; align-items: center;
+  }
+  .brand-poster-name {
+    font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 17px;
+    color: var(--white); letter-spacing: 0.02em;
+  }
+
+  /* fallback: chips de las marcas restantes debajo del grid de pósters */
+  .brands-more { display: flex; justify-content: center; align-items: center; gap: 14px; flex-wrap: wrap; margin-top: 32px; }
+  .brand-chip {
+    font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 15px;
+    color: var(--text-3); letter-spacing: 0.06em; white-space: nowrap; transition: color 0.2s;
+  }
+  .brand-chip:hover { color: var(--gold); }
+  .brands-more-dot { color: var(--border); font-size: 15px; }
+
+  /* catalog */
+  .catalog { position: relative; z-index: 1; padding: 100px 0; }
+  .section-head { text-align: center; margin-bottom: 60px; }
+  .section-eyebrow {
+    display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--gold); margin-bottom: 14px;
+  }
+  .section-title { font-size: clamp(28px, 4vw, 44px); margin-bottom: 12px; }
+  .section-desc { font-size: 15px; color: var(--text-2); max-width: 520px; margin: 0 auto; }
+
+  .catalog-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  @media (max-width: 860px) { .catalog-grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 560px) { .catalog-grid { grid-template-columns: 1fr; } }
+
+  .catalog-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden;
+    transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+  }
+  .catalog-card:hover { transform: translateY(-4px); border-color: var(--gold); box-shadow: 0 12px 36px rgba(240,184,0,0.12); }
+  .catalog-img-wrap { height: 200px; overflow: hidden; background: var(--surface-2); }
+  .catalog-img-wrap img { width: 100%; height: 100%; object-fit: contain; padding: 20px; transition: transform 0.4s; }
+  .catalog-img-wrap-poster { height: 260px; background: #f5f5f5; }
+  .catalog-img-wrap-poster img { padding: 0; object-fit: cover; object-position: top center; }
+  .catalog-card:hover .catalog-img-wrap img { transform: scale(1.05); }
+  .catalog-body { padding: 22px; }
+  .catalog-tag { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold); }
+  .catalog-body h3 { font-size: 20px; margin: 6px 0 8px; }
+  .catalog-body p { font-size: 13.5px; color: var(--text-2); line-height: 1.6; }
+  .catalog-specs { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+  .catalog-spec { font-size: 11px; font-weight: 600; padding: 4px 10px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 4px; color: var(--text-2); }
+
+  /* reveal */
+  .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .reveal.in-view { opacity: 1; transform: translateY(0); }
+  .stagger { transition-delay: calc(var(--i, 0) * 0.1s); }
+
+  /* why */
+  .why { position: relative; z-index: 1; padding: 100px 0; }
+  .why-box {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+    padding: 56px 64px;
+  }
+  @media (max-width: 780px) { .why-box { grid-template-columns: 1fr; gap: 40px; padding: 36px 28px; } }
+  .why-box h2 { font-size: clamp(30px, 3.5vw, 46px); margin-bottom: 14px; }
+  .why-box .lead { font-size: 15px; color: var(--text-2); margin-bottom: 28px; line-height: 1.7; }
+  .why-list { display: flex; flex-direction: column; gap: 16px; }
+  .why-item { display: flex; align-items: flex-start; gap: 14px; }
+  .why-check { width: 22px; height: 22px; border-radius: 50%; background: var(--gold-dim); border: 1.5px solid var(--gold); display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--gold); font-weight: 900; flex-shrink: 0; margin-top: 1px; }
+  .why-item-text { font-size: 15px; color: var(--text-2); line-height: 1.5; }
+
+  /* video section */
+  .video-section { position: relative; z-index: 1; padding: 100px 0; }
+  .video-wrap {
+    border-radius: 14px; overflow: hidden; border: 1px solid var(--border);
+    box-shadow: 0 24px 80px rgba(0,0,0,0.5); margin-top: 40px;
+    aspect-ratio: 16/9;
+  }
+  .video-wrap video { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  /* contact */
+  .contact { position: relative; z-index: 1; padding: 100px 0; }
+  .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 48px; }
+  @media (max-width: 640px) { .contact-grid { grid-template-columns: 1fr; } }
+  .contact-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    padding: 28px 32px; transition: border-color 0.2s;
+  }
+  .contact-card:hover { border-color: var(--gold); }
+  .contact-card-label { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); margin-bottom: 8px; }
+  .contact-card-value { font-family: 'Barlow Condensed', sans-serif; font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+  .contact-card-sub { font-size: 13px; color: var(--text-2); line-height: 1.5; }
+  .contact-cta { text-align: center; padding: 64px 32px; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; }
+  .contact-cta h2 { font-size: clamp(28px, 4vw, 48px); margin-bottom: 10px; }
+  .contact-cta p { color: var(--text-2); font-size: 15px; margin-bottom: 28px; }
+  .contact-cta-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn-dark { background: var(--white); color: black; padding: 13px 24px; border-radius: 7px; font-weight: 700; font-size: 14px; display: inline-flex; align-items: center; gap: 8px; transition: transform 0.15s; }
+  .btn-dark:hover { transform: translateY(-2px); }
+  .btn-outline-dark { border: 1.5px solid var(--border); color: var(--white); padding: 13px 24px; border-radius: 7px; font-weight: 600; font-size: 14px; display: inline-flex; align-items: center; gap: 8px; transition: transform 0.15s, border-color 0.15s; }
+  .btn-outline-dark:hover { transform: translateY(-2px); border-color: var(--gold); }
+
+  /* footer */
+  footer { position: relative; z-index: 1; border-top: 1px solid var(--border); padding: 28px 0; }
+  .footer-row { display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: var(--text-3); flex-wrap: wrap; gap: 8px; }
+
+  /* WhatsApp float */
+  .wa-float {
+    position: fixed; bottom: 28px; right: 28px; z-index: 200;
+    width: 54px; height: 54px; background: #25D366; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 20px rgba(37,211,102,0.4);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .wa-float:hover { transform: scale(1.08); box-shadow: 0 6px 28px rgba(37,211,102,0.5); }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<div class="bg-texture"></div>
+<div class="particles" id="particles"></div>
+
+<header>
+  <nav>
+    <div class="logo">
+      <div class="logo-icon" style="background:#000; padding:4px;">
+        <img src="https://res.cloudinary.com/dijxgoytw/image/upload/v1778686227/Pipsa_logo_png_damxzy.png" alt="Pipsa Montacargas" style="width:30px;height:30px;object-fit:contain;" />
+      </div>
+      <div>
+        <div class="logo-text">PIPSA MONTACARGAS</div>
+        <div class="logo-sub">GUADALAJARA · JALISCO</div>
+      </div>
+    </div>
+    <div class="nav-links">
+      <a href="#equipos">Equipos</a>
+      <a href="#nosotros">Nosotros</a>
+      <a href="#contacto">Contacto</a>
+    </div>
+    <a href="https://wa.me/523338568329?text=Hola%2C+quiero+cotizar+un+montacargas" class="nav-cta" data-hover>Cotizar</a>
+  </nav>
+</header>
+
+<main>
+
+  <!-- HERO CON COMPOSITE BODEGA + MONTACARGAS -->
+  <section class="hero" id="hero">
+    <div class="hero-scene" aria-hidden="true">
+      <div class="hero-scene-bg" style="background-image:url('https://res.cloudinary.com/dijxgoytw/image/upload/v1789486356/ALMACEN_PNG_vhuaxu.png')"></div>
+      <div class="hero-scene-forklift-wrap">
+        <img class="hero-scene-forklift" src="https://res.cloudinary.com/dijxgoytw/image/upload/v1789486356/CROWN_PNG_rds0pj.png" alt="" />
+        <div class="hero-scene-shadow"></div>
+      </div>
+      <div class="hero-scene-fade"></div>
+    </div>
+    <div class="hero-content wrap">
+      <div class="hero-inner">
+        <div class="hero-eyebrow">Guadalajara · Desde 2007</div>
+        <h1 class="hero-title">
+          Renta y venta de<br>
+          <span class="accent">montacargas</span><br>
+          industriales
+        </h1>
+        <p class="hero-sub">Equipos eléctricos, gas LP y batería de litio. Marcas líderes con soporte técnico inmediato en toda la ZMG.</p>
+        <div class="hero-badges">
+          <span class="hero-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg>Eléctrico</span>
+          <span class="hero-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M8 3c-1 3-3 4-3 7a5 5 0 0 0 10 0c0-1-.5-2-1-2.5.5 2-1 3-1 3s.5-3-1.5-5c0 2-1 2.5-1 2.5S10 5 8 3z"/></svg>Gas LP</span>
+          <span class="hero-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M10 2V1h4v1M9 12h6"/></svg>Litio</span>
+          <span class="hero-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>Soporte técnico</span>
+        </div>
+        <div class="hero-actions">
+          <a href="https://wa.me/523338568329?text=Hola%2C+quiero+cotizar+un+montacargas" class="btn-primary" data-hover>
+            Cotizar ahora
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+          <a href="tel:3338568329" class="btn-whatsapp" data-hover>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C9.6 21 3 14.4 3 6c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/></svg>
+            33 3856 8329
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="hero-scroll">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+    </div>
+  </section>
+
+  <!-- ⚠️ PENDIENTE: no se implementó la secuencia de scroll en fases
+       (mantener escena → girar montacargas → desplazarlo para introducir
+       Renta/Venta/Servicio técnico). Eso requiere validar el timing viendo
+       el render real contigo; por ahora el hero usa un parallax simple de
+       2 capas (fondo + montacargas) que se atenuú al bajar. Avisa si quieres
+       que iteremos esa secuencia como siguiente paso. -->
+
+  <!-- STATS -->
+  <section class="stats">
+    <div class="wrap">
+      <div class="stats-grid">
+        <div class="stat-item reveal stagger" style="--i:0">
+          <div class="counter-num" data-count="17" data-suffix="+">0+</div>
+          <div class="stat-label">Años de experiencia</div>
+        </div>
+        <div class="stat-item reveal stagger" style="--i:1">
+          <div class="counter-num" data-count="70" data-suffix="+">0+</div>
+          <div class="stat-label">Equipos en flota</div>
+        </div>
+        <div class="stat-item reveal stagger" style="--i:2">
+          <div class="counter-num" data-count="7" data-suffix="">0</div>
+          <div class="stat-label">Marcas líderes</div>
+        </div>
+        <div class="stat-item reveal stagger" style="--i:3">
+          <div class="counter-num" data-count="24" data-suffix="/7">0/7</div>
+          <div class="stat-label">Soporte técnico</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BRANDS -->
+  <section class="brands">
+    <div class="wrap">
+      <div class="brands-label">Marcas que manejamos</div>
+      <div class="brands-grid">
+        <div class="brand-poster reveal stagger" style="--i:0" data-hover>
+          <img src="https://res.cloudinary.com/dijxgoytw/image/upload/v1789428081/TOYOTA_COMB_P%C3%81GINA_si6gp9.png" alt="Montacargas Toyota" />
+          <div class="brand-poster-label">
+            <span class="brand-poster-name">TOYOTA</span>
+          </div>
+        </div>
+        <div class="brand-poster reveal stagger" style="--i:1" data-hover>
+          <img src="https://res.cloudinary.com/dijxgoytw/image/upload/v1789426003/HYSTER_P%C3%81GINA_yld3ep.png" alt="Montacargas Hyster" />
+          <div class="brand-poster-label">
+            <span class="brand-poster-name">HYSTER</span>
+          </div>
+        </div>
+        <div class="brand-poster reveal stagger" style="--i:2" data-hover>
+          <img src="https://res.cloudinary.com/dijxgoytw/image/upload/v1789428041/YALE_2_P%C3%81GINA_bfysh1.png" alt="Montacargas Yale" />
+          <div class="brand-poster-label">
+            <span class="brand-poster-name">YALE</span>
+          </div>
+        </div>
+        <div class="brand-poster reveal stagger" style="--i:3" data-hover>
+          <img src="https://res.cloudinary.com/dijxgoytw/image/upload/v1789426003/CROWN_P%C3%81GINA_r6k5py.png" alt="Montacargas Crown" />
+          <div class="brand-poster-label">
+            <span class="brand-poster-name">CROWN</span>
+          </div>
+        </div>
+      </div>
+      <div class="brands-more">
+        <span class="brand-chip">NISSAN</span>
+        <span class="brands-more-dot">·</span>
+        <span class="brand-chip">RAYMOND</span>
+        <span class="brands-more-dot">·</span>
+        <span class="brand-chip">UNICARRIERS</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- CATALOG -->
+  <section class="catalog" id="equipos">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="section-eyebrow">Nuestros equipos</div>
+        <h2 class="section-title">Tenemos el equipo ideal para ti</h2>
+        <p class="section-desc">Renta o compra con planes flexibles y soporte técnico incluido.</p>
+      </div>
+      <div class="catalog-grid">
+        <div class="catalog-card reveal stagger" style="--i:0" data-hover>
+          <div class="catalog-img-wrap catalog-img-wrap-poster"><img src="https://res.cloudinary.com/dijxgoytw/image/upload/v1789426002/TOYOTA_PAGINA_cqnbtw.png" alt="Montacargas eléctrico" /></div>
+          <div class="catalog-body">
+            <span class="catalog-tag">⚡ Eléctrico</span>
+            <h3>Montacargas eléctrico</h3>
+            <p>Ideal para interiores. Cero emisiones, operación silenciosa y menor costo de mantenimiento.</p>
+            <div class="catalog-specs">
+              <span class="catalog-spec">Interior</span>
+              <span class="catalog-spec">Cero emisiones</span>
+              <span class="catalog-spec">Silencioso</span>
+            </div>
+          </div>
+        </div>
+        <div class="catalog-card reveal stagger" style="--i:1" data-hover>
+          <div class="catalog-img-wrap catalog-img-wrap-poster"><img src="https://res.cloudinary.com/dijxgoytw/image/upload/v1789426003/YALE_PAGINA_g1qova.png" alt="Montacargas gas LP" /></div>
+          <div class="catalog-body">
+            <span class="catalog-tag">🔥 Gas LP</span>
+            <h3>Montacargas Gas LP</h3>
+            <p>Potencia y autonomía para operaciones de alta demanda en exteriores e interiores ventilados.</p>
+            <div class="catalog-specs">
+              <span class="catalog-spec">Interior / Exterior</span>
+              <span class="catalog-spec">Alta potencia</span>
+            </div>
+          </div>
+        </div>
+        <div class="catalog-card reveal stagger" style="--i:2" data-hover>
+          <div class="catalog-img-wrap catalog-img-wrap-poster"><img src="https://res.cloudinary.com/dijxgoytw/image/upload/v1789426003/CROWN_P%C3%81GINA_r6k5py.png" alt="Montacargas batería de litio" /></div>
+          <div class="catalog-body">
+            <span class="catalog-tag">🔋 Batería de litio</span>
+            <h3>La tecnología más nueva</h3>
+            <p>Carga rápida, mayor vida útil de batería y cero mantenimiento de electrolito.</p>
+            <div class="catalog-specs">
+              <span class="catalog-spec">Carga rápida</span>
+              <span class="catalog-spec">Sin mantenimiento</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY US -->
+  <section class="why" id="nosotros">
+    <div class="wrap">
+      <div class="why-box reveal">
+        <div>
+          <h2>¿Rentar o comprar?</h2>
+          <p class="lead">Tenemos el equipo ideal para ti, sin importar qué decidas. Más de 17 años respaldando a la industria en Guadalajara con equipos confiables y soporte real.</p>
+          <a href="https://wa.me/523338568329" class="btn-primary" data-hover>Platícanos qué necesitas</a>
+        </div>
+        <div class="why-list">
+          <div class="why-item"><span class="why-check">✓</span><span class="why-item-text">Planes por semana, mes y año</span></div>
+          <div class="why-item"><span class="why-check">✓</span><span class="why-item-text">Soporte técnico inmediato</span></div>
+          <div class="why-item"><span class="why-check">✓</span><span class="why-item-text">Equipos seminuevos y bien mantenidos</span></div>
+          <div class="why-item"><span class="why-check">✓</span><span class="why-item-text">7 marcas líderes en distribución</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VIDEO -->
+  <section class="video-section">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="section-eyebrow">Conócenos</div>
+        <h2 class="section-title">Especialistas en montacargas</h2>
+        <p class="section-desc">Más de 17 años de experiencia respaldan nuestra reputación como empresa responsable y de gran calidad en servicio y maquinaria.</p>
+      </div>
+      <div class="video-wrap reveal">
+        <video controls poster="https://pipsamontacargas.com/wp-content/uploads/2025/06/MONTACARGAS-PIPSA-GAS-LP-1.png">
+          <source src="https://pipsamontacargas.com/wp-content/uploads/2025/06/Video-de-WhatsApp-2025-05-09-a-las-20.03.35_68f83aa5.mp4" type="video/mp4">
+        </video>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="contact" id="contacto">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="section-eyebrow">Contacto</div>
+        <h2 class="section-title">Cotiza tu equipo hoy</h2>
+      </div>
+      <div class="contact-grid reveal">
+        <div class="contact-card">
+          <div class="contact-card-label">Teléfono</div>
+          <div class="contact-card-value">33 3856 8329</div>
+          <div class="contact-card-sub">Lunes a Viernes 8:30–17:30 · Sábados 8:30–14:00</div>
+        </div>
+        <div class="contact-card">
+          <div class="contact-card-label">Correo</div>
+          <div class="contact-card-value">pipsamontacargas@hotmail.com</div>
+          <div class="contact-card-sub">C. Bahías de Huatulco 99, Agua Blanca Industrial, 45235 Zapopan, Jal.</div>
+        </div>
+      </div>
+      <div class="contact-cta reveal">
+        <h2>¿Listo para cotizar?</h2>
+        <p>Respuesta inmediata por teléfono o WhatsApp</p>
+        <div class="contact-cta-actions">
+          <a href="tel:3338568329" class="btn-dark" data-hover>Llamar ahora</a>
+          <a href="https://wa.me/523338568329?text=Hola%2C+quiero+cotizar+un+montacargas" class="btn-outline-dark" data-hover>Escribir por WhatsApp</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-row">
+      <span>© 2026 Pipsa Montacargas · Zapopan, Jalisco</span>
+      <span>Desarrollado por Oleda Solutions</span>
+    </div>
+  </div>
+</footer>
+
+<a href="https://wa.me/523338568329?text=Hola%2C+quiero+cotizar+un+montacargas" class="wa-float" aria-label="WhatsApp" data-hover>
+  <svg width="27" height="27" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.36 5.08L2 22l5.06-1.33A9.94 9.94 0 0012 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm5.2 14.15c-.22.62-1.28 1.18-1.76 1.24-.45.06-1.02.09-1.65-.1-.38-.12-.87-.28-1.5-.55-2.64-1.14-4.36-3.8-4.5-3.98-.13-.18-1.08-1.43-1.08-2.73s.68-1.93.92-2.2c.24-.26.53-.33.7-.33.18 0 .35 0 .5.01.16.01.38-.06.6.46.22.53.75 1.83.82 1.96.07.13.11.29.02.47-.09.18-.13.29-.26.44-.13.15-.27.34-.39.46-.13.13-.26.27-.11.53.15.26.66 1.09 1.42 1.76.98.87 1.8 1.14 2.06 1.27.26.13.41.11.56-.07.15-.18.64-.75.81-1.01.17-.26.34-.22.57-.13.24.09 1.5.71 1.76.84.26.13.43.19.5.3.06.11.06.62-.16 1.24z"/></svg>
+</a>
+
+<script>
+  const cursor = document.getElementById('cursor');
+  const cursorRing = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx + 'px'; cursor.style.top = my + 'px';
+  });
+  function ringLoop() {
+    rx += (mx - rx) * 0.15; ry += (my - ry) * 0.15;
+    cursorRing.style.left = rx + 'px'; cursorRing.style.top = ry + 'px';
+    requestAnimationFrame(ringLoop);
+  }
+  ringLoop();
+  document.querySelectorAll('[data-hover]').forEach(el => {
+    el.addEventListener('mouseenter', () => { cursor.classList.add('hovering'); cursorRing.classList.add('hovering'); });
+    el.addEventListener('mouseleave', () => { cursor.classList.remove('hovering'); cursorRing.classList.remove('hovering'); });
+  });
+
+  const particlesContainer = document.getElementById('particles');
+  for (let i = 0; i < 22; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const size = Math.random() * 3 + 1.5;
+    p.style.width = size + 'px'; p.style.height = size + 'px';
+    p.style.left = Math.random() * 100 + '%'; p.style.bottom = '-10px';
+    p.style.animationDuration = (Math.random() * 12 + 14) + 's';
+    p.style.animationDelay = (Math.random() * 14) + 's';
+    particlesContainer.appendChild(p);
+  }
+
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in-view'); io.unobserve(e.target); } });
+  }, { threshold: 0.15 });
+  revealEls.forEach(el => io.observe(el));
+
+  const counters = document.querySelectorAll('.counter-num');
+  const counterIo = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      const el = entry.target;
+      const target = parseInt(el.dataset.count, 10);
+      const suffix = el.dataset.suffix || '';
+      const duration = 1600;
+      const start = performance.now();
+      function tick(now) {
+        const progress = Math.min((now - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const current = Math.floor(eased * target);
+        el.textContent = current.toLocaleString('es-MX') + suffix;
+        if (progress < 1) requestAnimationFrame(tick);
+        else el.textContent = target.toLocaleString('es-MX') + suffix;
+      }
+      requestAnimationFrame(tick);
+      counterIo.unobserve(el);
+    });
+  }, { threshold: 0.5 });
+  counters.forEach(el => counterIo.observe(el));
+
+  // ── Parallax del hero: fondo y montacargas se mueven a velocidades
+  //    distintas al hacer scroll, sin secuestrar el scroll de la página.
+  //    Se desactiva completamente si el usuario prefiere movimiento reducido
+  //    o si el hero ya no está en pantalla (ahorra trabajo fuera de vista). ──
+  (function heroParallax() {
+    const heroSection = document.getElementById('hero');
+    const bg = document.querySelector('.hero-scene-bg');
+    const forklift = document.querySelector('.hero-scene-forklift-wrap');
+    if (!heroSection || !bg || !forklift) return;
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduceMotion) return; // deja las capas estáticas, ya definidas en CSS
+
+    let ticking = false;
+    let heroVisible = true;
+
+    const heroIo = new IntersectionObserver((entries) => {
+      entries.forEach(e => { heroVisible = e.isIntersecting; });
+    }, { threshold: 0 });
+    heroIo.observe(heroSection);
+
+    function updateParallax() {
+      ticking = false;
+      if (!heroVisible) return;
+      const rect = heroSection.getBoundingClientRect();
+      const progress = Math.min(Math.max(-rect.top / (rect.height || 1), 0), 1);
+
+      // fondo se mueve lento, el montacargas un poco más rápido y con leve escala
+      const bgShift = progress * 40;
+      const forkliftShift = progress * 90;
+      const forkliftScale = 1 - progress * 0.06;
+      const fade = 1 - progress * 0.9;
+
+      bg.style.transform = `translateY(${bgShift}px)`;
+      forklift.style.transform = `translateY(${forkliftShift}px) scale(${forkliftScale})`;
+      heroSection.style.setProperty('--hero-fade', fade);
+    }
+
+    function onScroll() {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(updateParallax);
+      }
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    updateParallax();
+  })();
+</script>
+
+</body>
+</html>
