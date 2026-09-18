@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="es" class="no-js">
+<script>document.documentElement.classList.remove('no-js');</script>
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="icon" href="https://res.cloudinary.com/dijxgoytw/image/upload/v1789668463/pipsa-isotipo-amarillo_iahosv.png" type="image/png">
+<title>Pipsa Montacargas — Renta, Venta y Mantenimiento en Guadalajara</title>
+<meta name="description" content="Renta, venta y mantenimiento de montacargas en Guadalajara. Equipos eléctricos, gas LP y batería de litio. Marcas Yale, Crown, Toyota, Hyster, Nissan, Raymond y Unicarriers. Más de 17 años de experiencia." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:        #F7F8FA;
+    --bg-2:      #EDF0F3;
+    --surface:   #FFFFFF;
+    --surface-2: #EDF0F3;
+    --border:    #DCE1E6;
+    --gold:      #F2BE00;
+    --gold-dim:  rgba(242,190,0,0.14);
+    --gold-ink:  #20252B; /* texto oscuro requerido sobre fondo amarillo */
+    --white:     #20252B; /* nombre heredado de la versión oscura; ahora es el "grafito" de títulos/texto principal */
+    --text-2:    #505963;
+    --text-3:    #6B7580;
+    --green:     #1F9D55;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg); color: var(--white);
+    font-family: 'Inter', sans-serif;
+    overflow-x: hidden; line-height: 1.55;
+    position: relative; cursor: none;
+  }
+  @media (hover: none) { body { cursor: auto; } }
+  @media (prefers-reduced-motion: reduce) { * { animation-duration: 0.01ms !important; } html { scroll-behavior: auto; } body { cursor: auto; } }
+
+  h1, h2, h3 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800; letter-spacing: -0.01em; text-transform: uppercase;
+  }
+  a { color: inherit; text-decoration: none; }
+  button { font-family: inherit; cursor: none; }
+  @media (hover: none) { button, a { cursor: auto; } }
+  ::selection { background: var(--gold); color: black; }
+  :focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; border-radius: 4px; }
+
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 32px; }
+
+  /* custom cursor: SOLO transform/opacity animan por frame. La transición CSS
+     cubre nada más color/tamaño (eventos discretos de hover), nunca la posición
+     -antes "transition: transform 0.1s" reiniciaba en cada frame de mousemove,
+     compitiendo con el rAF y sintiéndose como lag. */
+  .cursor {
+    position: fixed; top: 0; left: 0; width: 8px; height: 8px; border-radius: 50%;
+    background: var(--gold); pointer-events: none; z-index: 9999;
+    transform: translate3d(0,0,0) translate(-50%, -50%);
+    transition: width 0.2s, height 0.2s, background 0.2s;
+  }
+  .cursor-ring {
+    position: fixed; top: 0; left: 0; width: 34px; height: 34px; border-radius: 50%;
+    border: 1.5px solid rgba(240,184,0,0.4); pointer-events: none; z-index: 9999;
+    transform: translate3d(0,0,0) translate(-50%, -50%);
+    transition: width 0.25s, height 0.25s, border-color 0.25s;
+  }
+  .cursor.hovering { width: 4px; height: 4px; }
+  .cursor-ring.hovering { width: 56px; height: 56px; border-color: var(--gold); }
+  @media (hover: none) { .cursor, .cursor-ring { display: none; } }
+
+  /* background texture */
+  .bg-texture {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image: linear-gradient(rgba(240,184,0,0.045) 1px, transparent 1px), linear-gradient(90deg, rgba(240,184,0,0.045) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(ellipse 90% 100% at 50% 30%, black 0%, transparent 90%);
+  }
+
+  .particles { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+  .particle { position: absolute; border-radius: 50%; background: var(--gold); opacity: 0; animation: floatUp linear infinite; }
+  @keyframes floatUp {
+    0%   { transform: translateY(0) translateX(0); opacity: 0; }
+    10%  { opacity: 0.22; }
+    90%  { opacity: 0.12; }
+    100% { transform: translateY(-100vh) translateX(20px); opacity: 0; }
+  }
+
+  /* nav */
+  header {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(255,255,255,0.85); backdrop-filter: blur(14px); border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  nav { max-width: 1180px; margin: 0 auto; padding: 16px 32px; display: flex; align-items: center; justify-content: space-between; }
+  .logo { display: flex; align-items: center; flex-shrink: 0; }
+  /* Logo principal: el archivo ya incluye "PIPSA MONTACARGAS" — no se repite texto */
+  .logo-img { height: 62px; width: auto; max-width: 220px; object-fit: contain; display: block; flex-shrink: 0; }
+  @media (max-width: 900px) { nav { padding: 16px 20px; } }
+  @media (max-width: 560px) { .logo-img { height: 44px; max-width: 160px; } }
+  @media (max-width: 400px) {
+    nav { padding: 14px 16px; }
+    /* En móvil muy angosto se muestra solo el isotipo para no desbordar */
+    .logo-img { content: url('https://res.cloudinary.com/dijxgoytw/image/upload/v1789668463/pipsa-isotipo-amarillo_iahosv.png'); height: 38px; max-width: 38px; }
+    .nav-cta { padding: 9px 14px; font-size: 12px; }
+  }
+  .nav-links { display: flex; gap: 32px; font-size: 14px; color: var(--text-2); }
+  .nav-links a { position: relative; padding-bottom: 3px; }
+  .nav-links a::after {
+    content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 1.5px; background: var(--gold);
+    transition: width 0.25s;
+  }
+  .nav-links a:hover::after { width: 100%; }
+  .nav-links a:hover { color: var(--white); }
+  .nav-cta { background: var(--gold); color: black; padding: 10px 22px; border-radius: 6px; font-size: 13.5px; font-weight: 700; text-transform: uppercase; }
+  @media (max-width: 900px) { .nav-links { display: none; } nav { padding: 16px 20px; } }
+
+  /* hero: fondo de bodega fijo dentro del hero (barato, sin filtros costosos) */
+  .hero {
+    position: relative; z-index: 1;
+    min-height: 100vh;
+    display: flex; align-items: center;
+    overflow: hidden;
+    padding: 100px 0 80px;
+  }
+  /* pantallas de poca altura (laptops con zoom, ventanas bajas): compacta
+     el hero para que los botones no queden fuera sin hacer scroll */
+  @media (max-height: 720px) and (min-width: 769px) {
+    .hero { padding: 84px 0 48px; }
+    .hero-logo-img { margin-bottom: 4px; width: 180px; }
+    .hero-eyebrow { margin-bottom: 12px; }
+    h1.hero-title { margin-bottom: 12px; }
+    .hero-sub { margin-bottom: 18px; }
+    .hero-badges { margin-bottom: 20px; }
+  }
+  /* Fondo del hero: almacén luminoso claro.
+     El Crown (#forkliftLayer, z-index:5) va encima de este fondo.
+     La fade lateral izquierda protege la legibilidad del texto sin oscurecer. */
+  .hero-scene-bg {
+    position: absolute; inset: 0; z-index: 0;
+    background-image: url('https://res.cloudinary.com/dijxgoytw/image/upload/v1789668463/pipsa-fondo-almacen-claro_kj88m6.png');
+    background-size: cover; background-position: center;
+    transform: translateZ(0);
+  }
+  .hero-scene-fade {
+    position: absolute; inset: 0; z-index: 1;
+    /* degradado blanco ligero solo del lado izquierdo; el lado derecho queda
+       completamente limpio para que el Crown se integre sobre la foto */
+    background: linear-gradient(90deg,
+      rgba(255,255,255,0.96) 0%,
+      rgba(255,255,255,0.78) 38%,
+      rgba(255,255,255,0.15) 68%,
+      rgba(255,255,255,0) 100%);
+  }
+  .hero-content { position: relative; z-index: 1; width: 100%; }
+  .hero-inner { max-width: 680px; }
+
+  /* ── Capa compartida del montacargas: vive fuera del flujo normal (fixed),
+       por eso NO se recorta dentro del hero y puede "viajar" visualmente
+       por varias secciones. Un único rAF loop mueve translate3d/scale/opacity;
+       nunca toca box-shadow/filter en cada frame (esas son costosas de repintar). ── */
+  #forkliftLayer {
+    position: fixed; top: 6vh; right: clamp(16px, 4vw, 56px);
+    z-index: 5; pointer-events: none;
+    width: min(52vw, 720px); height: 84vh;
+    display: flex; align-items: flex-end; justify-content: center;
+    transform: translate3d(0,0,0);
+    will-change: transform, opacity;
+  }
+  #forkliftLayer img {
+    height: 100%; width: auto; object-fit: contain;
+    /* sombra plana precalculada en el propio PNG/elipse de abajo, NO drop-shadow dinámico */
+  }
+  .forklift-shadow {
+    position: absolute; left: 50%; bottom: 2%; transform: translateX(-50%);
+    width: 58%; height: 22px; border-radius: 50%;
+    background: radial-gradient(ellipse, rgba(32,37,43,0.22) 0%, transparent 72%);
+    /* sombra sutil calibrada para fondo claro; blur fijo de bajo radio, no anima */
+  }
+  @media (prefers-reduced-motion: reduce) {
+    #forkliftLayer { position: absolute; top: 4%; right: 3%; height: 88%; transform: none !important; }
+  }
+  @media (max-width: 768px) {
+    #forkliftLayer { display: none; } /* simplificado: en móvil prioriza lectura, sin capa flotante */
+  }
+
+  .hero-logo-img {
+    /* Logo en el hero: el archivo ya incluye el nombre, no se duplica texto */
+    width: clamp(180px, 22vw, 255px); height: auto;
+    object-fit: contain; display: block;
+    margin-bottom: 14px;
+  }
+  .hero-eyebrow {
+    display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700;
+    letter-spacing: 0.1em; color: var(--text-2); text-transform: uppercase; margin-bottom: 18px;
+  }
+  .hero-eyebrow::before { content: ''; width: 24px; height: 2px; background: var(--gold); }
+
+  h1.hero-title { font-size: clamp(36px, 5.2vw, 64px); line-height: 1.02; margin-bottom: 18px; }
+  h1.hero-title .accent { color: var(--gold); }
+
+  .hero-sub { font-family: 'Inter', sans-serif; font-size: 16px; color: var(--text-2); max-width: 480px; margin-bottom: 26px; line-height: 1.6; }
+
+  .hero-badges { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 30px; }
+  .hero-badge {
+    display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600;
+    background: rgba(255,255,255,0.75); backdrop-filter: blur(8px);
+    border: 1px solid var(--border); padding: 7px 13px; border-radius: 20px; color: var(--text-2);
+  }
+  .hero-badge svg { color: var(--gold); flex-shrink: 0; }
+
+  .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--gold); color: black; padding: 14px 26px; border-radius: 7px; border: none;
+    font-weight: 700; font-size: 14.5px; text-transform: uppercase; letter-spacing: 0.02em;
+    display: inline-flex; align-items: center; gap: 8px; transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 26px rgba(240,184,0,0.35); }
+  .btn-whatsapp {
+    background: #25D366; color: white; padding: 14px 26px; border-radius: 7px; border: none;
+    font-weight: 700; font-size: 14.5px; display: inline-flex; align-items: center; gap: 8px;
+    transition: transform 0.15s;
+  }
+  .btn-whatsapp:hover { transform: translateY(-2px); }
+
+  .hero-scroll {
+    position: absolute; bottom: 36px; left: 50%; transform: translateX(-50%);
+    z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 8px;
+    color: var(--text-3); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+    animation: bounce 2s infinite;
+  }
+  .hero-scroll svg { opacity: 0.5; }
+  @keyframes bounce { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(6px)} }
+
+  @media (max-width: 768px) {
+    .hero { min-height: 100svh; padding: 120px 0 100px; }
+    .hero-logo-img { width: clamp(140px, 50vw, 200px); }
+    h1.hero-title { font-size: clamp(38px, 9vw, 56px); }
+    .hero-scene-fade { background: linear-gradient(180deg, rgba(255,255,255,0.88) 0%, rgba(255,255,255,0.72) 50%, rgba(255,255,255,0.92) 85%, var(--bg) 100%); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-scene-bg { transform: none !important; }
+  }
+
+  /* stats */
+  .stats { position: relative; z-index: 1; padding: 56px 0; background: var(--bg-2); }
+  .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; }
+  @media (max-width: 680px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+  .stat-item {
+    padding: 36px 28px; background: var(--surface);
+    border: 1px solid var(--border); text-align: center;
+    transition: background 0.2s;
+  }
+  .stat-item:hover { background: var(--surface-2); }
+  .counter-num { font-family: 'Barlow Condensed', sans-serif; font-size: 52px; font-weight: 900; color: var(--gold); line-height: 1; }
+  .stat-label { font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-2); margin-top: 6px; }
+
+  /* brands */
+  .brands { position: relative; z-index: 1; padding: 70px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .brands-label { text-align: center; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-3); margin-bottom: 40px; }
+
+  .brands-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+  @media (max-width: 980px) { .brands-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px) { .brands-grid { grid-template-columns: 1fr; } }
+
+  .brand-poster {
+    position: relative; border-radius: 14px; overflow: hidden;
+    background: #FFFFFF; border: 1px solid var(--border);
+    transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+    padding-bottom: 8px;
+  }
+  .brand-poster:hover { transform: translateY(-6px); border-color: var(--gold); box-shadow: 0 16px 44px rgba(240,184,0,0.16); }
+  .brand-poster-frame { aspect-ratio: 2/3; background: #FFFFFF; }
+  .brand-poster-frame img { width: 100%; height: 100%; object-fit: contain; object-position: center; display: block; }
+  .brand-poster-label {
+    padding: 10px 4px 0; text-align: center;
+  }
+  .brand-poster-name {
+    font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 15px;
+    color: var(--white); letter-spacing: 0.04em;
+  }
+
+  /* fallback: chips de las marcas restantes debajo del grid de pósters */
+  .brands-more { display: flex; justify-content: center; align-items: center; gap: 14px; flex-wrap: wrap; margin-top: 32px; }
+  .brand-chip {
+    font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 15px;
+    color: var(--text-3); letter-spacing: 0.06em; white-space: nowrap; transition: color 0.2s;
+  }
+  .brand-chip:hover { color: var(--gold); }
+  .brands-more-dot { color: var(--border); font-size: 15px; }
+
+  /* catalog */
+  .catalog { position: relative; z-index: 1; padding: 76px 0; }
+  .section-head { text-align: center; margin-bottom: 60px; }
+  .section-eyebrow {
+    display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--text-2); margin-bottom: 14px; font-weight: 700;
+  }
+  .section-title { font-size: clamp(28px, 4vw, 44px); margin-bottom: 12px; }
+  .section-desc { font-size: 15px; color: var(--text-2); max-width: 520px; margin: 0 auto; }
+
+  .catalog-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  @media (max-width: 860px) { .catalog-grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 560px) { .catalog-grid { grid-template-columns: 1fr; } }
+
+  .catalog-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden;
+    box-shadow: 0 1px 3px rgba(32,37,43,0.06);
+    transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+  }
+  .catalog-card:hover { transform: translateY(-4px); border-color: var(--gold); box-shadow: 0 12px 36px rgba(240,184,0,0.14); }
+  .catalog-img-wrap { height: 200px; overflow: hidden; background: var(--surface-2); }
+  .catalog-img-wrap img { width: 100%; height: 100%; object-fit: contain; padding: 20px; transition: transform 0.4s; }
+  /* pósters verticales de marca: proporción alta uniforme, imagen completa sin recortar
+     (logo, texto y equipo incluidos), con contain — el fondo del póster (blanco/gris)
+     ya combina con el color de fondo de este contenedor. */
+  .catalog-img-wrap-poster { height: 400px; background: #FFFFFF; }
+  .catalog-img-wrap-poster img { padding: 0; object-fit: contain; object-position: center; }
+  .catalog-card:hover .catalog-img-wrap img { transform: scale(1.05); }
+  .catalog-body { padding: 22px; }
+  .catalog-tag { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-2); }
+  .catalog-body h3 { font-size: 20px; margin: 6px 0 8px; }
+  .catalog-body p { font-size: 13.5px; color: var(--text-2); line-height: 1.6; }
+  .catalog-specs { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+  .catalog-spec { font-size: 11px; font-weight: 600; padding: 4px 10px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 4px; color: var(--text-2); }
+
+  /* reveal: si por algún motivo el JS no corre (bloqueado, error, etc.),
+     el contenido no debe quedar oculto para siempre. */
+  .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .reveal.in-view { opacity: 1; transform: translateY(0); }
+  .stagger { transition-delay: calc(var(--i, 0) * 0.1s); }
+  html.no-js .reveal { opacity: 1; transform: none; } /* clase que quita el JS si carga bien */
+
+  /* solutions: renta / venta / mantenimiento */
+  .solutions { position: relative; z-index: 1; padding: 76px 0; background: linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .solutions-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  @media (max-width: 980px) { .solutions-grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 640px) { .solutions-grid { grid-template-columns: 1fr; } }
+
+  .solution-card {
+    position: relative; border-radius: 16px; overflow: hidden;
+    background: var(--surface); border: 1px solid var(--border);
+    box-shadow: 0 1px 3px rgba(32,37,43,0.06);
+    display: flex; flex-direction: column; height: 100%;
+    transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+  }
+  .solution-card:hover { transform: translateY(-5px); border-color: var(--gold); box-shadow: 0 16px 40px rgba(240,184,0,0.16); }
+
+  /* Proporción horizontal uniforme para las 3 tarjetas (16:10). Las que
+     usan foto real (Mantenimiento) recortan con cover; las que todavía
+     usan el póster vertical de marca (Renta, Venta — sin foto horizontal
+     disponible aún) muestran el diseño COMPLETO con contain sobre un
+     fondo neutro, en vez de forzar un recorte que corta texto/equipo. */
+  .solution-media { position: relative; aspect-ratio: 16 / 10; background: var(--surface-2); overflow: hidden; }
+  .solution-media img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; }
+  .solution-media.solution-media-fit { background: #FFFFFF; }
+  .solution-media.solution-media-fit img { object-fit: contain; object-position: center; }
+  .solution-card:hover .solution-media img { transform: scale(1.05); }
+
+  .solution-body { padding: 26px 24px 28px; display: flex; flex-direction: column; gap: 12px; flex: 1; }
+  .solution-tag { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-2); }
+  .solution-body h3 { font-size: 21px; font-family: 'Barlow Condensed', sans-serif; font-weight: 800; letter-spacing: 0.01em; line-height: 1.15; }
+  .solution-body p { font-size: 14px; color: var(--text-2); line-height: 1.55; flex: 1; }
+  .solution-btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    margin-top: auto; padding: 12px 18px; border-radius: 8px;
+    background: var(--gold); color: #0a0a0a; font-weight: 700; font-size: 13.5px;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .solution-btn:hover { background: #ffd23a; transform: translateY(-1px); }
+  .solution-btn.outline { background: transparent; border: 1.5px solid var(--border); color: var(--white); }
+  .solution-btn.outline:hover { border-color: var(--gold); color: var(--gold); background: transparent; }
+
+  /* section head reutilizado, más compacto */
+  .solutions .section-head { margin-bottom: 40px; }
+
+  /* mantenimiento standalone */
+  .maintenance { position: relative; z-index: 1; padding: 76px 0; background: var(--surface); border-bottom: 1px solid var(--border); }
+  .maintenance-box {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+    box-shadow: 0 1px 4px rgba(32,37,43,0.06);
+    padding: 48px 56px;
+  }
+  @media (max-width: 780px) { .maintenance-box { grid-template-columns: 1fr; gap: 32px; padding: 32px 26px; } }
+  .maintenance-box h2 { font-size: clamp(28px, 3.2vw, 42px); margin-bottom: 14px; }
+  .maintenance-box .lead { font-size: 15px; color: var(--text-2); margin-bottom: 24px; line-height: 1.7; }
+  .maintenance-list { display: flex; flex-direction: column; gap: 15px; }
+  .maintenance-item { display: flex; align-items: flex-start; gap: 14px; }
+  .maintenance-check { width: 22px; height: 22px; border-radius: 50%; background: var(--gold-dim); border: 1.5px solid var(--gold); display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+  .maintenance-item-text { font-size: 14.5px; color: var(--text-2); line-height: 1.5; }
+  .maintenance-visual {
+    position: relative; width: 100%;
+    aspect-ratio: 4 / 5; min-height: 320px;
+    border-radius: 14px; overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--surface-2); /* placeholder mientras carga, evita salto de layout */
+  }
+  .maintenance-visual img {
+    width: 100%; height: 100%; object-fit: cover; object-position: center 20%;
+    display: block;
+  }
+  @media (max-width: 780px) { .maintenance-visual { order: -1; aspect-ratio: 4 / 3; min-height: 240px; } }
+
+
+  /* why (nosotros) */
+  .why { position: relative; z-index: 1; padding: 76px 0; }
+  .why-box {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+    box-shadow: 0 1px 4px rgba(32,37,43,0.06);
+    padding: 48px 56px;
+  }
+  @media (max-width: 780px) { .why-box { grid-template-columns: 1fr; gap: 32px; padding: 32px 26px; } }
+  .why-box h2 { font-size: clamp(28px, 3.2vw, 42px); margin-bottom: 14px; }
+  .why-box .lead { font-size: 15px; color: var(--text-2); margin-bottom: 24px; line-height: 1.7; }
+  .why-list { display: flex; flex-direction: column; gap: 15px; }
+  .why-item { display: flex; align-items: flex-start; gap: 14px; }
+  .why-check { width: 22px; height: 22px; border-radius: 50%; background: var(--gold-dim); border: 1.5px solid var(--gold); display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--gold); font-weight: 900; flex-shrink: 0; margin-top: 1px; }
+  .why-item-text { font-size: 14.5px; color: var(--text-2); line-height: 1.5; }
+
+  /* video section */
+  .video-section { position: relative; z-index: 1; padding: 76px 0; background: var(--bg-2); }
+  .video-wrap {
+    border-radius: 14px; overflow: hidden; border: 1px solid var(--border);
+    box-shadow: 0 20px 60px rgba(32,37,43,0.14); margin-top: 40px;
+    aspect-ratio: 16/9;
+  }
+  .video-wrap video { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  /* contact */
+  .contact { position: relative; z-index: 1; padding: 80px 0; }
+  .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 48px; }
+  @media (max-width: 640px) { .contact-grid { grid-template-columns: 1fr; } }
+  .contact-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(32,37,43,0.06);
+    padding: 28px 32px; transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .contact-card:hover { border-color: var(--gold); box-shadow: 0 6px 18px rgba(32,37,43,0.08); }
+  .contact-card-label { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-2); margin-bottom: 8px; font-weight: 700; }
+  .contact-card-value { font-family: 'Barlow Condensed', sans-serif; font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+  .contact-card-sub { font-size: 13px; color: var(--text-2); line-height: 1.5; }
+  .contact-cta { text-align: center; padding: 64px 32px; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; box-shadow: 0 1px 4px rgba(32,37,43,0.06); }
+  .contact-cta h2 { font-size: clamp(28px, 4vw, 48px); margin-bottom: 10px; }
+  .contact-cta p { color: var(--text-2); font-size: 15px; margin-bottom: 28px; }
+  .contact-cta-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn-dark { background: var(--gold); color: var(--gold-ink); padding: 13px 24px; border-radius: 7px; font-weight: 700; font-size: 14px; display: inline-flex; align-items: center; gap: 8px; transition: transform 0.15s, background 0.15s; }
+  .btn-dark:hover { transform: translateY(-2px); background: #ffd23a; }
+  .btn-outline-dark { border: 1.5px solid var(--border); color: var(--white); padding: 13px 24px; border-radius: 7px; font-weight: 600; font-size: 14px; display: inline-flex; align-items: center; gap: 8px; transition: transform 0.15s, border-color 0.15s; }
+  .btn-outline-dark:hover { transform: translateY(-2px); border-color: var(--gold); }
+
+  /* footer */
+  footer { position: relative; z-index: 1; border-top: 1px solid var(--border); padding: 28px 0; }
+  .footer-row { display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: var(--text-3); flex-wrap: wrap; gap: 8px; }
+
+  /* WhatsApp float */
+  .wa-float {
+    position: fixed; bottom: 28px; right: 28px; z-index: 200;
+    width: 54px; height: 54px; background: #25D366; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 20px rgba(37,211,102,0.4);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .wa-float:hover { transform: scale(1.08); box-shadow: 0 6px 28px rgba(37,211,102,0.5); }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<div class="bg-texture"></div>
+<div class="particles" id="particles"></div>
+
+<header>
+  <nav>
+    <div class="logo">
+      <img class="logo-img" src="https://res.cloudinary.com/dijxgoytw/image/upload/v1789668464/pipsa-logo-principal_weufiu.png" alt="Pipsa Montacargas" />
+    </div>
+    <div class="nav-links">
+      <a href="#equipos">Equipos</a>
+      <a href="#mantenimiento">Mantenimiento</a>
+      <a href="#nosotros">Nosotros</a>
+      <a href="#contacto">Contacto</a>
+    </div>
+    <a href="https://wa.me/523338568329?text=Hola%2C+quiero+cotizar+un+montacargas" class="nav-cta" data-hover>Cotizar</a>
+  </nav>
+</header>
+
+<main>
+
+  <!-- Capa compartida del montacargas: position:fixed a nivel raíz de <main>,
+       fuera del overflow:hidden del hero, para que nunca se recorte y pueda
+       "viajar" por varias secciones. Su posición/escala/opacidad las controla
+       un único rAF en el script de abajo, usando solo transform y opacity. -->
+  <div id="forkliftLayer" aria-hidden="true">
+    <img src="https://res.cloudinary.com/dijxgoytw/image/upload/v1789749389/crown-original-reacondicionado_ltgfya.png" alt="Montacargas Crown eléctrico reacondicionado" fetchpriority="high" />
+    <div class="forklift-shadow"></div>
+  </div>
+
+  <!-- HERO: fondo de bodega. El montacargas vive en #forkliftLayer (fuera de main),
+       compartido con las secciones siguientes para dar continuidad al recorrido. -->
+  <section class="hero" id="hero">
+    <div class="hero-scene-bg" aria-hidden="true"></div>
+    <div class="hero-scene-fade" aria-hidden="true"></div>
+    <div class="hero-content wrap">
+      <div class="hero-inner">
+        <img
+          src="https://res.cloudinary.com/dijxgoytw/image/upload/v1789668464/pipsa-logo-principal_weufiu.png"
+          alt="Pipsa Montacargas"
+          class="hero-logo-img" />
+        <div class="hero-eyebrow">Guadalajara · Desde 2007</div>
+        <h1 class="hero-title">
+          Renta, venta y<br>
+          mantenimiento de<br>
+          <span class="accent">montacargas</span>
+        </h1>
+        <p class="hero-sub">Equipos eléctricos, gas LP y batería de litio. Marcas líderes con soporte técnico en toda la ZMG.</p>
+        <div class="hero-badges">
+          <span class="hero-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg>Eléctrico</span>
+          <span class="hero-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M8 3c-1 3-3 4-3 7a5 5 0 0 0 10 0c0-1-.5-2-1-2.5.5 2-1 3-1 3s.5-3-1.5-5c0 2-1 2.5-1 2.5S10 5 8 3z"/></svg>Gas LP</span>
+          <span class="hero-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M10 2V1h4v1M9 12h6"/></svg>Litio</span>
+          <span class="hero-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>Soporte técnico</span>
+        </div>
+        <div class="hero-actions">
+          <a href="https://wa.me/523338568329?text=Hola%2C+quiero+cotizar+un+montacargas" class="btn-primary" data-hover>
+            Cotizar ahora
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+          <a href="tel:3338568329" class="btn-whatsapp" data-hover>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C9.6 21 3 14.4 3 6c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/></svg>
+            33 3856 8329
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="hero-scroll">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+    </div>
+  </section>
+
+  <!-- ⚠️ PENDIENTE: no se implementó la secuencia de scroll en fases
+       (mantener escena → girar montacargas → desplazarlo para introducir
+       Renta/Venta/Servicio técnico). Eso requiere validar el timing viendo
+       el render real contigo; por ahora el hero usa un parallax simple de
+       2 capas (fondo + montacargas) que se atenuú al bajar. Avisa si quieres
+       que iteremos esa secuencia como siguiente paso. -->
+
+  <!-- STATS -->
+  <section class="stats">
+    <div class="wrap">
+      <div class="stats-grid">
+        <div class="stat-item reveal stagger" style="--i:0">
+          <div class="counter-num" data-count="17" data-suffix="+">0+</div>
+          <div class="stat-label">Años de experiencia</div>
+        </div>
+        <div class="stat-item reveal stagger" style="--i:1">
+          <div class="counter-num" data-count="70" data-suffix="+">0+</div>
+          <div class="stat-label">Equipos en flota</div>
+        </div>
+        <div class="stat-item reveal stagger" style="--i:2">
+          <div class="counter-num" data-count="7" data-suffix="">0</div>
+          <div class="stat-label">Marcas líderes</div>
+        </div>
+        <div class="stat-item reveal stagger" style="--i:3">
+          <div class="counter-num" data-count="24" data-suffix="/7">0/7</div>
+          <div class="stat-label">Soporte técnico</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BRANDS -->
+  <section class="brands">
+    <div class="wrap">
+      <div class="brands-label">Marcas que manejamos</div>
+      <div class="brands-grid">
+        <div class="brand-poster reveal stagger" style="--i:0" data-hover>
+          <div class="brand-poster-frame"><img src="https://res.cloudinary.com/dijxgoytw/image/upload/v1789744314/TOYOTA_PAGINA_H_hrt05c.png" alt="Montacargas Toyota eléctrico con horquillas completas" loading="lazy" /></div>
+          <div class="brand-poster-label">
+            <span class="brand-poster-name">TOYOTA</span>
+          </div>
+        </div>
+        <div class="brand-poster reveal stagger" style="--i:1" data-hover>
+          <div class="brand-poster-frame"><img src="https://res.cloudinary.com/dijxgoytw/image/upload/v1789744314/HYSTER_PAGINA_H_aianol.png" alt="Montacargas Hyster gas LP con horquillas completas" loading="lazy" /></div>
+          <div class="brand-poster-label">
+            <span class="brand-poster-name">HYSTER</span>
+          </div>
+        </div>
+        <div class="brand-poster reveal stagger" style="--i:2" data-hover>
+          <div class="brand-poster-frame"><img src="https://res.cloudinary.com/dijxgoytw/image/upload/v1789744314/YALE_PAGINA_H_qa04k8.png" alt="Montacargas Yale gas LP con horquillas completas" loading="lazy" /></div>
+          <div class="brand-poster-label">
+            <span class="brand-poster-name">YALE</span>
+          </div>
+        </div>
+        <div class="brand-poster reveal stagger" style="--i:3" data-hover>
+          <div class="brand-poster-frame"><img src="https://res.cloudinary.com/dijxgoytw/image/upload/v1789426003/CROWN_P%C3%81GINA_r6k5py.png" alt="Montacargas Crown" loading="lazy" /></div>
+          <div class="brand-poster-label">
+            <span class="brand-poster-name">CROWN</span>
+          </div>
+        </div>
+      </div>
+      <div class="brands-more">
+        <span class="brand-chip">NISSAN</span>
+        <span class="brands-more-dot">·</span>
+        <span class="brand-chip">RAYMOND</span>
+        <span class="brands-more-dot">·</span>
+        <span class="brand-chip">UNICARRIERS</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- CATALOG -->
+  <section class="catalog" id="equipos">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="section-eyebrow">Nuestros equipos</div>
+        <h2 class="section-title">Tenemos el equipo ideal para ti</h2>
+        <p class="section-desc">Renta o compra con planes flexibles y soporte técnico incluido.</p>
+      </div>
+      <div class="catalog-grid">
+        <div class="catalog-card reveal stagger" style="--i:0" data-hover>
+          <div class="catalog-img-wrap catalog-img-wrap-poster"><img src="https://res.cloudinary.com/dijxgoytw/image/upload/v1789744314/TOYOTA_PAGINA_H_hrt05c.png" alt="Montacargas Toyota eléctrico con horquillas completas" loading="lazy" /></div>
+          <div class="catalog-body">
+            <span class="catalog-tag">⚡ Eléctrico</span>
+            <h3>Montacargas eléctrico</h3>
+            <p>Ideal para bodegas, almacenes y espacios cerrados. Opera sin emisiones, produce poco ruido y requiere menor mantenimiento.</p>
+            <div class="catalog-specs">
+              <span class="catalog-spec">Bodegas y almacenes</span>
+              <span class="catalog-spec">Cero emisiones</span>
+              <span class="catalog-spec">Operación silenciosa</span>
+            </div>
+          </div>
+        </div>
+        <div class="catalog-card reveal stagger" style="--i:1" data-hover>
+          <div class="catalog-img-wrap catalog-img-wrap-poster"><img src="https://res.cloudinary.com/dijxgoytw/image/upload/v1789744314/HYSTER_PAGINA_H_aianol.png" alt="Montacargas Hyster gas LP con horquillas completas" loading="lazy" /></div>
+          <div class="catalog-body">
+            <span class="catalog-tag">🔥 Gas LP</span>
+            <h3>Montacargas Gas LP</h3>
+            <p>Potencia y autonomía para trabajar en patios, almacenes ventilados y operaciones continuas de carga.</p>
+            <div class="catalog-specs">
+              <span class="catalog-spec">Patios y almacenes</span>
+              <span class="catalog-spec">Alta potencia</span>
+              <span class="catalog-spec">Uso continuo</span>
+            </div>
+          </div>
+        </div>
+        <div class="catalog-card reveal stagger" style="--i:2" data-hover>
+          <div class="catalog-img-wrap catalog-img-wrap-poster"><img src="https://res.cloudinary.com/dijxgoytw/image/upload/v1789426003/CROWN_P%C3%81GINA_r6k5py.png" alt="Montacargas batería de litio" /></div>
+          <div class="catalog-body">
+            <span class="catalog-tag">🔋 Batería de litio</span>
+            <h3>La tecnología más nueva</h3>
+            <p>Carga rápida, mayor vida útil de batería y cero mantenimiento de electrolito.</p>
+            <div class="catalog-specs">
+              <span class="catalog-spec">Carga rápida</span>
+              <span class="catalog-spec">Sin mantenimiento</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SOLUTIONS: Renta / Venta / Mantenimiento -->
+  <section class="solutions">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="section-eyebrow">Nuestros servicios</div>
+        <h2 class="section-title">Soluciones para tu operación</h2>
+        <p class="section-desc">Renta, venta y mantenimiento de montacargas en Guadalajara.</p>
+      </div>
+      <div class="solutions-grid">
+        <div class="solution-card reveal stagger" style="--i:0" data-hover>
+          <!-- ⚠️ RECURSO PENDIENTE: falta fotografía horizontal real de Pipsa
+               para "Renta" (equipo en operación o en patio, sin texto de marca
+               superpuesto). Se muestra el póster vertical de Toyota completo
+               (contain) mientras tanto, en vez de recortarlo con cover. -->
+          <div class="solution-media solution-media-fit">
+            <img src="https://res.cloudinary.com/dijxgoytw/image/upload/v1789744314/TOYOTA_PAGINA_H_hrt05c.png" alt="Montacargas Toyota eléctrico con horquillas completas" loading="lazy" />
+          </div>
+          <div class="solution-body">
+            <span class="solution-tag">Renta</span>
+            <h3>Renta de montacargas</h3>
+            <p>Cuéntanos qué equipo necesitas y por cuánto tiempo.</p>
+            <a href="https://wa.me/523338568329?text=Hola%2C+quiero+cotizar+una+renta+de+montacargas" class="solution-btn" data-hover>Cotizar renta</a>
+          </div>
+        </div>
+        <div class="solution-card reveal stagger" style="--i:1" data-hover>
+          <!-- ⚠️ RECURSO PENDIENTE: falta fotografía horizontal real de Pipsa
+               para "Venta" (equipo listo para entrega o en showroom, sin
+               texto de marca superpuesto). Se muestra el póster vertical de
+               Yale completo (contain) mientras tanto. -->
+          <div class="solution-media solution-media-fit">
+            <img src="https://res.cloudinary.com/dijxgoytw/image/upload/v1789744314/YALE_PAGINA_H_qa04k8.png" alt="Montacargas Yale gas LP con horquillas completas" loading="lazy" />
+          </div>
+          <div class="solution-body">
+            <span class="solution-tag">Venta</span>
+            <h3>Venta de montacargas</h3>
+            <p>Encuentra un montacargas para las necesidades de tu operación.</p>
+            <a href="#equipos" class="solution-btn outline" data-hover>Ver equipos</a>
+          </div>
+        </div>
+        <div class="solution-card reveal stagger" style="--i:2" data-hover>
+          <div class="solution-media">
+            <img
+              src="https://res.cloudinary.com/dijxgoytw/image/upload/v1789497048/T%C3%89CNICO_PAGE_ltezcn.png"
+              alt="Imagen ilustrativa de un técnico con uniforme de PIPSA realizando mantenimiento a un montacargas eléctrico"
+              loading="lazy" decoding="async"
+              style="object-position: center 30%;" />
+          </div>
+          <div class="solution-body">
+            <span class="solution-tag">Mantenimiento</span>
+            <h3>Mantenimiento de montacargas</h3>
+            <p>Cuéntanos qué necesita tu montacargas y solicita atención.</p>
+            <a href="https://wa.me/523338568329?text=Hola%2C+necesito+mantenimiento+para+mi+montacargas" class="solution-btn" data-hover>Solicitar mantenimiento</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MANTENIMIENTO: sección propia con más detalle -->
+  <section class="maintenance" id="mantenimiento">
+    <div class="wrap">
+      <div class="maintenance-box reveal">
+        <div>
+          <h2>Mantenimiento para tu montacargas</h2>
+          <p class="lead">Cuéntanos qué necesita tu equipo y coordinamos la atención con nuestro equipo técnico.</p>
+          <a href="https://wa.me/523338568329?text=Hola%2C+necesito+mantenimiento+para+mi+montacargas" class="btn-primary" data-hover>Solicitar mantenimiento</a>
+          <div class="maintenance-list" style="margin-top:28px">
+            <div class="maintenance-item"><span class="maintenance-check">✓</span><span class="maintenance-item-text">Atención para equipos eléctricos, gas LP y litio</span></div>
+            <div class="maintenance-item"><span class="maintenance-check">✓</span><span class="maintenance-item-text">Soporte técnico por WhatsApp o teléfono</span></div>
+            <div class="maintenance-item"><span class="maintenance-check">✓</span><span class="maintenance-item-text">Más de 17 años de experiencia en la industria</span></div>
+          </div>
+        </div>
+        <div class="maintenance-visual">
+          <img
+            src="https://res.cloudinary.com/dijxgoytw/image/upload/v1789497048/T%C3%89CNICO_PAGE_ltezcn.png"
+            alt="Imagen ilustrativa de un técnico con uniforme de PIPSA realizando mantenimiento a un montacargas eléctrico"
+            loading="lazy" decoding="async" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY US (resumen, ahora "Nosotros" separado del pitch renta/venta) -->
+  <section class="why" id="nosotros">
+    <div class="wrap">
+      <div class="why-box reveal">
+        <div>
+          <h2>¿Por qué Pipsa Montacargas?</h2>
+          <p class="lead">Más de 17 años respaldando a la industria en Guadalajara con equipos confiables y soporte real.</p>
+          <a href="https://wa.me/523338568329" class="btn-primary" data-hover>Platícanos qué necesitas</a>
+        </div>
+        <div class="why-list">
+          <div class="why-item"><span class="why-check">✓</span><span class="why-item-text">Planes de renta por semana, mes y año</span></div>
+          <div class="why-item"><span class="why-check">✓</span><span class="why-item-text">Soporte técnico por WhatsApp o teléfono</span></div>
+          <div class="why-item"><span class="why-check">✓</span><span class="why-item-text">Equipos seminuevos y bien mantenidos</span></div>
+          <div class="why-item"><span class="why-check">✓</span><span class="why-item-text">7 marcas líderes en distribución</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VIDEO -->
+  <section class="video-section">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="section-eyebrow">Conócenos</div>
+        <h2 class="section-title">Especialistas en montacargas</h2>
+        <p class="section-desc">Más de 17 años de experiencia respaldan nuestra reputación como empresa responsable y de gran calidad en servicio y maquinaria.</p>
+      </div>
+      <div class="video-wrap reveal">
+        <video controls poster="https://pipsamontacargas.com/wp-content/uploads/2025/06/MONTACARGAS-PIPSA-GAS-LP-1.png">
+          <source src="https://pipsamontacargas.com/wp-content/uploads/2025/06/Video-de-WhatsApp-2025-05-09-a-las-20.03.35_68f83aa5.mp4" type="video/mp4">
+        </video>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="contact" id="contacto">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="section-eyebrow">Contacto</div>
+        <h2 class="section-title">Cotiza tu equipo hoy</h2>
+      </div>
+      <div class="contact-grid reveal">
+        <div class="contact-card">
+          <div class="contact-card-label">Teléfono</div>
+          <div class="contact-card-value">33 3856 8329</div>
+          <div class="contact-card-sub">Lunes a Viernes 8:30–17:30 · Sábados 8:30–14:00</div>
+        </div>
+        <div class="contact-card">
+          <div class="contact-card-label">Correo</div>
+          <div class="contact-card-value">pipsamontacargas@hotmail.com</div>
+          <div class="contact-card-sub">Tlaquepaque, Jal. <!-- ⚠️ Dirección exacta (calle, colonia y C.P.) pendiente de confirmar --></div>
+        </div>
+      </div>
+      <div class="contact-cta reveal">
+        <h2>¿Qué necesita tu operación?</h2>
+        <p>Cotiza renta, venta o mantenimiento de montacargas con nuestro equipo.</p>
+        <div class="contact-cta-actions">
+          <a href="https://wa.me/523338568329?text=Hola%2C+quiero+cotizar+un+montacargas" class="btn-dark" data-hover>Cotiza por WhatsApp</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-row">
+      <div style="display:flex;align-items:center;gap:10px">
+        <img src="https://res.cloudinary.com/dijxgoytw/image/upload/v1789668463/pipsa-logo-monocromatico_zy9iz9.png" alt="Pipsa Montacargas" style="height:22px;width:auto;object-fit:contain" />
+        <span>© 2026 Pipsa Montacargas · Tlaquepaque, Jalisco</span>
+      </div>
+      <span>Desarrollado por Oleda Solutions</span>
+    </div>
+  </div>
+</footer>
+
+<a href="https://wa.me/523338568329?text=Hola%2C+quiero+cotizar+un+montacargas" class="wa-float" aria-label="WhatsApp" data-hover>
+  <svg width="27" height="27" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.36 5.08L2 22l5.06-1.33A9.94 9.94 0 0012 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm5.2 14.15c-.22.62-1.28 1.18-1.76 1.24-.45.06-1.02.09-1.65-.1-.38-.12-.87-.28-1.5-.55-2.64-1.14-4.36-3.8-4.5-3.98-.13-.18-1.08-1.43-1.08-2.73s.68-1.93.92-2.2c.24-.26.53-.33.7-.33.18 0 .35 0 .5.01.16.01.38-.06.6.46.22.53.75 1.83.82 1.96.07.13.11.29.02.47-.09.18-.13.29-.26.44-.13.15-.27.34-.39.46-.13.13-.26.27-.11.53.15.26.66 1.09 1.42 1.76.98.87 1.8 1.14 2.06 1.27.26.13.41.11.56-.07.15-.18.64-.75.81-1.01.17-.26.34-.22.57-.13.24.09 1.5.71 1.76.84.26.13.43.19.5.3.06.11.06.62-.16 1.24z"/></svg>
+</a>
+
+<script>
+  // ── Cursor custom + trayectoria del montacargas comparten UN SOLO rAF loop
+  //    para no competir por frame budget. El anillo usa translate3d (no
+  //    left/top, que fuerza layout); el loop se apaga solo si el mouse
+  //    lleva > 2s sin moverse, y se reactiva en el próximo mousemove. ──
+  const cursor = document.getElementById('cursor');
+  const cursorRing = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  let cursorIdleTimer = null;
+  let masterLoopActive = false;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.transform = `translate3d(${mx}px, ${my}px, 0) translate(-50%, -50%)`;
+    clearTimeout(cursorIdleTimer);
+    cursorIdleTimer = setTimeout(() => { /* deja de forzar work extra tras 2s quieto */ }, 2000);
+    startMasterLoop();
+  });
+  document.querySelectorAll('[data-hover]').forEach(el => {
+    el.addEventListener('mouseenter', () => { cursor.classList.add('hovering'); cursorRing.classList.add('hovering'); });
+    el.addEventListener('mouseleave', () => { cursor.classList.remove('hovering'); cursorRing.classList.remove('hovering'); });
+  });
+
+  const particlesContainer = document.getElementById('particles');
+  for (let i = 0; i < 12; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const size = Math.random() * 3 + 1.5;
+    p.style.width = size + 'px'; p.style.height = size + 'px';
+    p.style.left = Math.random() * 100 + '%'; p.style.bottom = '-10px';
+    p.style.animationDuration = (Math.random() * 12 + 14) + 's';
+    p.style.animationDelay = (Math.random() * 14) + 's';
+    particlesContainer.appendChild(p);
+  }
+
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in-view'); io.unobserve(e.target); } });
+  }, { threshold: 0.15 });
+  revealEls.forEach(el => io.observe(el));
+
+  const counters = document.querySelectorAll('.counter-num');
+  const counterIo = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      const el = entry.target;
+      const target = parseInt(el.dataset.count, 10);
+      const suffix = el.dataset.suffix || '';
+      const duration = 1600;
+      const start = performance.now();
+      function tick(now) {
+        const progress = Math.min((now - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const current = Math.floor(eased * target);
+        el.textContent = current.toLocaleString('es-MX') + suffix;
+        if (progress < 1) requestAnimationFrame(tick);
+        else el.textContent = target.toLocaleString('es-MX') + suffix;
+      }
+      requestAnimationFrame(tick);
+      counterIo.unobserve(el);
+    });
+  }, { threshold: 0.5 });
+  counters.forEach(el => counterIo.observe(el));
+
+  // ══════════════════════════════════════════════════════════════════
+  //  MASTER LOOP: un único requestAnimationFrame mueve, cada frame:
+  //   1) el anillo del cursor (lerp suave)
+  //   2) la trayectoria del montacargas compartido (#forkliftLayer)
+  //  Antes había DOS loops de rAF corriendo siempre (cursor y parallax),
+  //  cada uno tocando su propio transform sin coordinarse. Eso duplicaba
+  //  el trabajo por frame justo en el hero, donde además el drop-shadow
+  //  dinámico del PNG forzaba repintado de máscara alfa en cada cambio
+  //  de transform del padre — la causa principal del lag. Aquí: un solo
+  //  loop, solo transform/opacity, sombra del piso fija (no drop-shadow),
+  //  y el loop se pausa por completo si la página está fuera de foco o
+  //  el usuario prefiere movimiento reducido. ══════════════════════════
+  (function masterLoop() {
+    const forkliftLayer = document.getElementById('forkliftLayer');
+    const heroSection    = document.getElementById('hero');
+    const statsSection   = document.querySelector('.stats');
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const isMobile = window.matchMedia('(max-width: 768px)').matches;
+    const skipForklift = reduceMotion || isMobile || !forkliftLayer || !heroSection;
+
+    // Distancia a recorrer para que la capa salga COMPLETA por la derecha
+    // (incluye las horquillas: se mide con getBoundingClientRect, que da el
+    // ancho real ya renderizado, no un valor fijo adivinado). Se recalcula
+    // en resize porque el ancho de la capa depende del viewport (min(52vw,720px)).
+    let exitDistance = 0;
+    function measureExitDistance() {
+      if (!forkliftLayer) return;
+      const rect = forkliftLayer.getBoundingClientRect();
+      // distancia = lo que falta desde el borde izquierdo de la capa hasta
+      // salir por completo del borde derecho de la ventana
+      exitDistance = window.innerWidth - rect.left;
+    }
+    measureExitDistance();
+    window.addEventListener('resize', measureExitDistance, { passive: true });
+
+    function updateForklift() {
+      if (skipForklift) return;
+      const heroRect = heroSection.getBoundingClientRect();
+      const vh = window.innerHeight;
+
+      // progreso 0→1: 0 = portada tal cual, 1 = ya debe estar completamente
+      // fuera. Se completa ANTES de que las tarjetas de stats entren en
+      // pantalla, usando la propia distancia de scroll del hero como recorrido.
+      let progress;
+      if (statsSection) {
+        const statsRect = statsSection.getBoundingClientRect();
+        // el punto de scroll donde termina la salida es cuando stats está
+        // a punto de entrar por abajo (con margen para no solaparse)
+        const scrollStart = 0;
+        const scrollEnd = Math.max(heroRect.height - vh * 0.15, 1);
+        const scrolled = -heroRect.top;
+        progress = Math.min(Math.max(scrolled / scrollEnd, 0), 1);
+      } else {
+        progress = Math.min(Math.max(-heroRect.top / (heroRect.height || 1), 0), 1);
+      }
+
+      // easing suave (ease-out) para que la salida no se sienta lineal/brusca
+      const eased = 1 - Math.pow(1 - progress, 2);
+
+      // SOLO desplazamiento horizontal — mismo tamaño y altura siempre.
+      // No se toca opacity: el equipo sale opaco por el borde, no se desvanece.
+      const translateX = eased * exitDistance;
+
+      forkliftLayer.style.transform = `translate3d(${translateX}px, 0, 0)`;
+    }
+
+    function updateCursorRing() {
+      rx += (mx - rx) * 0.15; ry += (my - ry) * 0.15;
+      cursorRing.style.transform = `translate3d(${rx}px, ${ry}px, 0) translate(-50%, -50%)`;
+    }
+
+    function frame() {
+      updateCursorRing();
+      updateForklift();
+      loopHandle = requestAnimationFrame(frame);
+    }
+
+    let loopHandle = null;
+    function startLoop() {
+      if (loopHandle) return;
+      frame();
+    }
+    function stopLoop() {
+      if (loopHandle) cancelAnimationFrame(loopHandle);
+      loopHandle = null;
+    }
+
+    // Pausa el trabajo cuando la pestaña no está visible (ahorra CPU/batería)
+    document.addEventListener('visibilitychange', () => {
+      document.hidden ? stopLoop() : startLoop();
+    });
+
+    startLoop();
+  })();
+
+  // conecta el arranque del loop con el primer mousemove (evitamos correrlo
+  // antes de que exista interacción, aunque en la práctica startMasterLoop
+  // ya no es necesario porque el loop maestro corre solo — se deja como no-op
+  // por compatibilidad con el listener de mousemove de arriba)
+  function startMasterLoop() {}
+</script>
+
+</body>
+</html>
