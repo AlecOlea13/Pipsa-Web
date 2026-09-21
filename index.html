@@ -418,14 +418,28 @@
   .why-check { width: 22px; height: 22px; border-radius: 50%; background: var(--gold-dim); border: 1.5px solid var(--gold); display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--gold); font-weight: 900; flex-shrink: 0; margin-top: 1px; }
   .why-item-text { font-size: 14.5px; color: var(--text-2); line-height: 1.5; }
 
-  /* video section */
+  /* video section: 2 columnas — video vertical 9:16 a la izquierda, texto a la derecha */
   .video-section { position: relative; z-index: 1; padding: 76px 0; background: var(--bg-2); }
-  .video-wrap {
-    border-radius: 14px; overflow: hidden; border: 1px solid var(--border);
-    box-shadow: 0 20px 60px rgba(32,37,43,0.14); margin-top: 40px;
-    aspect-ratio: 16/9;
+  .video-columns {
+    display: grid; grid-template-columns: 380px 1fr; gap: 48px; align-items: center;
+    margin-top: 8px;
   }
-  .video-wrap video { width: 100%; height: 100%; object-fit: cover; display: block; }
+  @media (max-width: 900px) { .video-columns { grid-template-columns: 1fr; justify-items: center; text-align: center; } }
+
+  .video-wrap {
+    width: 100%; max-width: 380px;
+    aspect-ratio: 9 / 16;
+    border-radius: 18px; overflow: hidden;
+    border: 1.5px solid var(--gold);
+    box-shadow: 0 18px 45px rgba(32,37,43,0.18);
+    background: #111111;
+    justify-self: center;
+  }
+  .video-wrap video { width: 100%; height: 100%; object-fit: contain; display: block; background: #111111; }
+  @media (max-width: 480px) { .video-wrap { max-width: 300px; } }
+
+  .video-text { display: flex; flex-direction: column; gap: 6px; }
+  @media (max-width: 900px) { .video-text { align-items: center; } }
 
   /* contact */
   .contact { position: relative; z-index: 1; padding: 80px 0; }
@@ -764,15 +778,27 @@
   <!-- VIDEO -->
   <section class="video-section">
     <div class="wrap">
-      <div class="section-head reveal">
-        <div class="section-eyebrow">Conócenos</div>
-        <h2 class="section-title">Especialistas en montacargas</h2>
-        <p class="section-desc">Más de 17 años de experiencia respaldan nuestra reputación como empresa responsable y de gran calidad en servicio y maquinaria.</p>
-      </div>
-      <div class="video-wrap reveal">
-        <video controls poster="https://pipsamontacargas.com/wp-content/uploads/2025/06/MONTACARGAS-PIPSA-GAS-LP-1.png">
-          <source src="https://pipsamontacargas.com/wp-content/uploads/2025/06/Video-de-WhatsApp-2025-05-09-a-las-20.03.35_68f83aa5.mp4" type="video/mp4">
-        </video>
+      <div class="video-columns reveal">
+        <div class="video-wrap">
+          <video
+            controls
+            playsinline
+            preload="metadata"
+            poster="https://res.cloudinary.com/dijxgoytw/video/upload/so_1.5,f_jpg,q_auto/v1790015725/WhatsApp_Video_2026-09-21_at_12.34.57_vgwrmw.jpg"
+            aria-label="Video promocional de PIPSA Montacargas sobre renta y venta de equipos"
+          >
+            <source
+              src="https://res.cloudinary.com/dijxgoytw/video/upload/v1790015725/WhatsApp_Video_2026-09-21_at_12.34.57_vgwrmw.mp4"
+              type="video/mp4"
+            >
+            Tu navegador no puede reproducir este video.
+          </video>
+        </div>
+        <div class="video-text">
+          <div class="section-eyebrow">Conócenos</div>
+          <h2 class="section-title" style="margin-bottom:0">Especialistas en montacargas</h2>
+          <p class="section-desc" style="margin:0">Más de 17 años de experiencia respaldan nuestra reputación como empresa responsable y de gran calidad en servicio y maquinaria.</p>
+        </div>
       </div>
     </div>
   </section>
